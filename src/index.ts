@@ -1,0 +1,38 @@
+import * as dotenv from "dotenv";
+import { json, urlencoded } from 'express';
+import clc from 'cli-color';
+import morgan from 'morgan';
+import cors from 'cors';
+import path from 'path'
+import express from "express";
+import { requestHandler } from "./middleware/routingModule.middleware";
+import { authentication } from "./middleware/authentication.middleware";
+import { sequelize } from "./database/database";
+//import { stream } from './middlewares/winston';
+sequelize.sync({force:true});
+/*###################################### confing express ######################################*/
+dotenv.config({path: path?.join?.(__dirname, '../config/.env')});
+const app: express.Application = express();
+app.use(urlencoded({limit: '150mb', extended: true}));
+app.use(json({limit: '150mb'}));
+app.set('port', process.env.PORT || 3000);
+/*##############################################################################################*/
+/*######################################### middleware #########################################*/
+app.use(morgan('dev'));
+app.use(json({limit: '50mb'}));
+app.use(cors());
+
+console.log(path.resolve(__dirname, '../public'));
+app.use(express.static(path.resolve(__dirname, '../public')));
+/*##############################################################################################*/
+/*###################################### importing routes ######################################*/
+app.route(`/api/*`).get(authentication,requestHandler)
+                   .post(authentication, requestHandler)
+                   .put(authentication, requestHandler)
+                   .delete(authentication, requestHandler);
+/*##############################################################################################*/
+
+
+app.listen((app.get('port')),() => {
+    console.log(clc.magenta.inverse.bold(`Server on: localhost:${app.get('port')}`));
+});
