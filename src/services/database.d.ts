@@ -1,16 +1,5 @@
 import { Model } from "sequelize-typescript";
 
-type RepoErrorCode = 404 | 500
-export interface IRepo<M> {
-    save(model: M): RepoResult<M>;
-    findById(id: string): RepoResult<M>;
-    search(parameterName: string, parameterValue: string, sortBy: string, order: number, pageSize: number, pageNumber: number): RepoResult<M[]>;
-    getAll(): RepoResult<M[]>;
-    deleteById(id: string): RepoResult<M>;
-    findByIds(ids: string[]): RepoResult<M[]>;
-    deleteByIds(ids: string[]): RepoResult<any>;
-}
-
 
 
 export interface BaseRepository {
@@ -23,4 +12,50 @@ export interface BaseRepository {
   update(id: number, data: Model): Promise<Model>;
 
   delete(id: number): Promise<boolean>;
+}
+abstract class BaseError {
+  constructor(
+    public code: number,
+    public name: string,
+    public title: string,
+    public description: string,
+    public originalName?: string,
+    public stackTrace?: string,
+  ) {}
+
+  public toPlainObject(): object {
+    /* if (APP_ENV === 'development') {
+      return {
+        code: this.code,
+        name: this.name,
+        title: this.title,
+        description: this.description,
+        originalName: this.originalName,
+        stackTrace: this.stackTrace,
+      };
+    } */
+
+    return {
+      code: this.code,
+      name: this.name,
+      title: this.title,
+      description: this.description,
+    };
+  }
+}
+
+export class ResourceNotFoundError extends BaseError {
+  constructor(
+    public originalName?: string,
+    public stackTrace?: string,
+  ) {
+    super(
+      404,
+      'ResourceNotFoundError',
+      'Resource Not Found',
+      'The requested resource was not found or does not exist.',
+      originalName,
+      stackTrace,
+    );
+  }
 }
