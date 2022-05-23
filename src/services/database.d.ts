@@ -1,12 +1,15 @@
 import { Model } from "sequelize-typescript";
+import { MakeNullishOptional } from "sequelize/types/utils";
 export interface BaseRepository {
-  all(attributes?: string[]): Promise<Model[]>;
+  findAll(attributes?: string[]): Promise<Model[]>;
 
   findById(id: number, attributes?: string[]): Promise<Model>;
+  
+  findOne(query: WhereOptions, attributes?: string[]): Promise<Model>;
 
   create(data: MakeNullishOptional): Promise<Model>;
 
-  update(id: number, data: Model): Promise<Model>;
+  update(query:WhereOptions, data: Model): Promise<Model>;
 
-  delete(id: number): Promise<boolean>;
+  delete(query:WhereOptions<Attributes<M>>): Promise<boolean>;
 }

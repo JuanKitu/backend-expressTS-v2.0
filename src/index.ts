@@ -9,7 +9,7 @@ import { requestHandler } from "./middleware/routingModule.middleware";
 import { authentication } from "./middleware/authentication.middleware";
 import { sequelize } from "./database/database";
 //import { stream } from './middlewares/winston';
-sequelize.sync({force:true});
+sequelize.sync();
 /*###################################### confing express ######################################*/
 dotenv.config({path: path?.join?.(__dirname, '../config/.env')});
 const app: express.Application = express();

@@ -1,6 +1,7 @@
 import { BaseRepository } from "./database";
 import { Model, ModelCtor } from 'sequelize-typescript';
 import { MakeNullishOptional } from "sequelize/types/utils";
+import { Attributes, WhereOptions } from "sequelize/types";
 export abstract class BaseError {
   constructor(
     public code: number,
@@ -53,7 +54,7 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
       this.model = model
     }
 
-    public async all(attributes?: string[]): Promise<M[]> {
+    public async findAll(attributes?: string[]): Promise<M[]> {
 
       return this.model.findAll({
         attributes,
@@ -72,10 +73,11 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
 
       throw new ResourceNotFoundError();
     }
-    /* public async findOne(id: JSON): Promise<M> {
+    public async findOne(query:WhereOptions<Attributes<M>>,attributes?:string[]): Promise<M> {
       
       const resource = await this.model.findOne({
-        where:id
+        where:query,
+        attributes
       });
   
       if (resource) {
@@ -83,15 +85,18 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
       }
   
       throw new ResourceNotFoundError();
-    } */
-
-    public async create(data: MakeNullishOptional<M["_creationAttributes"]>): Promise<M> {
-      //aca el codigo putea porque no le agregue Optional<PetitionsI,'petition' | 'permission'>
-      return this.model.create<M>(data);
     }
 
-    public async update(id: number, data: any): Promise<M> {
-      const resource = await this.findById(id);
+    public async create(data: MakeNullishOptional<M["_creationAttributes"]>): Promise<M> {
+      const resource = this.model.create<M>(data);
+      if(!resource){
+        throw new ResourceNotFoundError(); 
+      }
+      return resource
+    }
+
+    public async update(query:WhereOptions<Attributes<M>>, data: any): Promise<M> {
+      const resource = await this.findOne(query);
 
       if (resource) {
         return resource.update(data);
@@ -100,8 +105,8 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
       throw new ResourceNotFoundError();
     }
 
-    public async delete(id: number): Promise<boolean> {
-      const resource = await this.findById(id);
+    public async delete(query:WhereOptions<Attributes<M>>): Promise<boolean> {
+      const resource = await this.findOne(query);
 
       if (resource) {
         await resource.destroy();
