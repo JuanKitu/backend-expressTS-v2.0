@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import Accounts from "../../models/Accounts.model";
 import { accountService } from "../../services/Account.service";
 export default async function (req:Request, res:Response){
     await accountService.create({

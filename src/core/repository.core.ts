@@ -1,8 +1,8 @@
-import { BaseRepository } from "./database";
+import { BaseRepository } from "./repository";
 import { Model, ModelCtor } from 'sequelize-typescript';
 import { MakeNullishOptional } from "sequelize/types/utils";
 import { Attributes, WhereOptions } from "sequelize/types";
-export abstract class BaseError {
+abstract class BaseError {
   constructor(
     public code: number,
     public name: string,
