@@ -1,7 +1,7 @@
 import { Model } from "sequelize-typescript";
 import { MakeNullishOptional } from "sequelize/types/utils";
 export interface BaseRepository {
-  findAll(attributes?: string[]): Promise<Model[]>;
+  findAll(query?:WhereOptions, attributes?: string[]): Promise<Model[]>;
 
   findById(id: number, attributes?: string[]): Promise<Model>;
   

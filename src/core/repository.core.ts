@@ -54,12 +54,19 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
       this.model = model
     }
 
-    public async findAll(attributes?: string[]): Promise<M[]> {
+    public async findAll(query?:WhereOptions<Attributes<M>>,attributes?: string[]): Promise<M[]> {
 
-      return this.model.findAll({
+      const resource =  await this.model.findAll({
+        where:query,
         attributes,
       });
+      if (resource) {
+        return resource;
+      }
+  
+      throw new ResourceNotFoundError();
     }
+    
 
     public async findById(id: number, attributes?: string[]): Promise<M> {
 
