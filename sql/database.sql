@@ -1,20 +1,26 @@
 CREATE TABLE "Accounts"(
     "account" SERIAL NOT NULL,
     email VARCHAR(50) NOT NULL,
+    hash VARCHAR NOT NULL,
     "emailGoogle" VARCHAR(50) NOT NULL,
-    password VARCHAR NOT NULL,
     salt VARCHAR,
     "accountName" VARCHAR,
     PRIMARY KEY("account")
 );
-
+CREATE TABLE "GroupRols"(
+    "groupRol" SERIAL NOT NULL,
+    "rolName" VARCHAR(100),
+    PRIMARY KEY("groupRol")
+);
 CREATE TABLE "Rols"(
     rol SERIAL NOT NULL,
     "account" INTEGER NOT NULL,
-    "rolName" VARCHAR(100),
+    "groupRol" INTEGER NOT NULL,
     PRIMARY KEY ("account", "rol"),
-    FOREIGN KEY ("account") REFERENCES "Accounts"
+    FOREIGN KEY ("account") REFERENCES "Accounts",
+    FOREIGN KEY ("groupRol") REFERENCES "GroupRols"
 );
+
 CREATE TABLE "Permissions"(
     "permission" SERIAL NOT NULL,
     rol INTEGER NOT NULL,
