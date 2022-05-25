@@ -1,14 +1,18 @@
 import jwt, { Secret } from 'jsonwebtoken'
 import { TokenDecoded, User, UserToken } from './jwt';
 import { OAuth2Client } from 'google-auth-library';
+import * as dotenv from "dotenv";
+import path from 'path';
+const baseRouteENV = path.join(__dirname, '..','..',);
+dotenv.config({ path: baseRouteENV+'/config/.env' });
 
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
-export function createToken(user: User) {
+export function createToken(account: string) {
     if (process.env.SEED) {
         const secretKey: Secret = process.env.SEED
         return jwt.sign({
-            user: user
+            account
         }, secretKey, { expiresIn: process.env.EXPIRATION_TOKEN });
     }
 };

@@ -8,6 +8,10 @@ function sendErrror (res:Response, reason:string){
         message: reason})
 }
 export async function rolsMiddleware(req:Request,res:Response,next:NextFunction){
+    const publicRoutes = new Set(['user/login','user/register','user/loginGoogle'])
+    if(publicRoutes.has(req.params[0])){
+        return next();
+    }
     let account = req.get('account');
     if(!account){
         return sendErrror(res,"user is not login");

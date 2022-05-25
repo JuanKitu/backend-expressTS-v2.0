@@ -8,6 +8,7 @@ import express from "express";
 import { requestHandler } from "./middleware/routingModule.middleware";
 import { authentication } from "./middleware/authentication.middleware";
 import { sequelize } from "./database/database";
+import { rolsMiddleware } from "./middleware/rolsModule.middleware";
 //import { stream } from './middlewares/winston';
 sequelize.sync();
 /*###################################### confing express ######################################*/
@@ -26,10 +27,10 @@ console.log(path.resolve(__dirname, '../public'));
 app.use(express.static(path.resolve(__dirname, '../public')));
 /*##############################################################################################*/
 /*###################################### importing routes ######################################*/
-app.route(`/api/*`).get(authentication,requestHandler)
-                   .post(authentication, requestHandler)
-                   .put(authentication, requestHandler)
-                   .delete(authentication, requestHandler);
+app.route(`/api/*`).get(authentication,rolsMiddleware,requestHandler)
+                   .post(authentication,rolsMiddleware, requestHandler)
+                   .put(authentication,rolsMiddleware, requestHandler)
+                   .delete(authentication,rolsMiddleware, requestHandler);
 /*##############################################################################################*/
 
 
