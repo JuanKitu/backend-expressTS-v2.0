@@ -16,4 +16,5 @@ export interface UserToken {
 export interface TokenDecoded{
     decoded:any,
     error:boolean
+    message:string
 }

@@ -11,16 +11,11 @@ export function authentication (req: Request, res: Response, next: NextFunction)
         return next();
     }
     let token = req.get('token');
-    if(!token){
-        return sendErrror(res, "token does not exist");
-    }
-    if(!process.env.SEED){
-        return sendErrror(res, "SEED does not exist");
-    }
-    const control = verifyToken(token, process.env.SEED)
+    const control = verifyToken(token)
     if(control.error){
-        return res.redirect('/api/user/login')
+        return sendErrror(res, control.message)
+        //return res.redirect('/api/user/login')
     }
-    res.setHeader("usuario", control.decoded.accounts.account);
+    res.setHeader("account", control.decoded.accounts.account);
     return next();
 };

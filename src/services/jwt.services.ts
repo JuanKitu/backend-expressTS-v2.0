@@ -32,19 +32,37 @@ export async function verifyGoogle(token:string){
         return user
     }
 };
-export function verifyToken(token:string, secretKey:string):TokenDecoded {
+export function verifyToken(token:string | undefined):TokenDecoded {
+    const secretKey = process.env.SEED
+    if(!secretKey){
+        return {
+            decoded:null,
+            error:true,
+            message:"SEED is undefined"
+        }
+    }
+    if(!token){
+        return {
+            decoded:null,
+            error:true,
+            message:"Token is undefinded"
+        }
+    }
     try{
         const decoded = jwt.verify(token, secretKey);
         return {
             decoded,
-            error:false
+            error:false,
+            message:"Ok"
         }
     }catch(err){
         return {
             decoded:null,
-            error:true
+            error:true,
+            message:"Token is not valid"
         }
     }
 }
+
 
     
