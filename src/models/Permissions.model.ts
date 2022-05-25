@@ -34,7 +34,8 @@ export default class Permissions extends Model<PermissionsI, PermissionsCreation
         type: DataType.STRING 
     })
     public routeName!: string;
-    @BelongsTo(() => Rols) rols!: Rols;
+    @BelongsTo(() => Rols, {foreignKey: "account"}) accounts!: Rols;
+    @BelongsTo(() => Rols, {foreignKey: "rol"}) rols!: Rols;
     @HasMany(() => Petitions) petitions!: Petitions[];
 
 };
