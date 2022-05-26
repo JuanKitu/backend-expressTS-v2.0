@@ -9,6 +9,8 @@ import { requestHandler } from "./middleware/routingModule.middleware";
 import { authentication } from "./middleware/authentication.middleware";
 import { sequelize } from "./database/database";
 import { rolsMiddleware } from "./middleware/rolsModule.middleware";
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from "./core/swagger.core";
 //import { stream } from './middlewares/winston';
 sequelize.sync();
 /*###################################### confing express ######################################*/
@@ -27,12 +29,13 @@ console.log(path.resolve(__dirname, '../public'));
 app.use(express.static(path.resolve(__dirname, '../public')));
 /*##############################################################################################*/
 /*###################################### importing routes ######################################*/
+
 app.route(`/api/*`).get(authentication,rolsMiddleware,requestHandler)
                    .post(authentication,rolsMiddleware, requestHandler)
                    .put(authentication,rolsMiddleware, requestHandler)
                    .delete(authentication,rolsMiddleware, requestHandler);
 /*##############################################################################################*/
-
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen((app.get('port')),() => {
     console.log(clc.magenta.inverse.bold(`Server on: localhost:${app.get('port')}`));
