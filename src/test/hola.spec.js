@@ -1,2 +1,1 @@
-"use strict";
-//# sourceMappingURL=hola.spec.js.map
+// # sourceMappingURL=hola.spec.js.map

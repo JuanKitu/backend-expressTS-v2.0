@@ -4,7 +4,7 @@ export interface User {
     salt:string,
     nombreUsuario:string,
     email:string
-};
+}
 
 export interface UserToken {
     idUsuario?: number,
@@ -12,7 +12,7 @@ export interface UserToken {
     email?:string,
     img?:string,
     google?:boolean
-};
+}
 export interface TokenDecoded{
     decoded:any,
     error:boolean

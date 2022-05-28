@@ -1,8 +1,12 @@
-import { BaseRepository } from "./repository";
+/* eslint-disable no-unused-vars */
+/* eslint-disable max-classes-per-file */
 import { Model, ModelCtor } from 'sequelize-typescript';
-import { MakeNullishOptional } from "sequelize/types/utils";
-import { Attributes, WhereOptions } from "sequelize/types";
+import { MakeNullishOptional } from 'sequelize/types/utils';
+import { Attributes, WhereOptions } from 'sequelize/types';
+import { BaseRepository } from './repository';
+
 abstract class BaseError {
+  // eslint-disable-next-line no-useless-constructor
   constructor(
     public code: number,
     public name: string,
@@ -10,7 +14,8 @@ abstract class BaseError {
     public description: string,
     public originalName?: string,
     public stackTrace?: string,
-  ) {}
+  // eslint-disable-next-line no-empty-function
+  ) { }
 
   public toPlainObject(): object {
     /* if (APP_ENV === 'development') {
@@ -48,28 +53,26 @@ class ResourceNotFoundError extends BaseError {
     }
 }
 
-export abstract class SequelizeBaseRepository<M extends Model> implements BaseRepository {
-    public model!: ModelCtor<M>
+export default abstract class SequelizeBaseRepository<M extends Model> implements BaseRepository {
+    public model!: ModelCtor<M>;
+
     constructor(model: ModelCtor<M>) {
-      this.model = model
+      this.model = model;
     }
 
-    public async findAll(query?:WhereOptions<Attributes<M>>,attributes?: string[]): Promise<M[]> {
-
-      const resource =  await this.model.findAll({
-        where:query,
+    public async findAll(query?:WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M[]> {
+      const resource = await this.model.findAll({
+        where: query,
         attributes,
       });
       if (resource) {
         return resource;
       }
-  
+
       throw new ResourceNotFoundError();
     }
-    
 
     public async findById(id: number, attributes?: string[]): Promise<M> {
-
       const resource = await this.model.findByPk(id, {
         attributes,
       });
@@ -80,26 +83,26 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
 
       throw new ResourceNotFoundError();
     }
-    public async findOne(query:WhereOptions<Attributes<M>>,attributes?:string[]): Promise<M> {
-      
+
+    public async findOne(query:WhereOptions<Attributes<M>>, attributes?:string[]): Promise<M> {
       const resource = await this.model.findOne({
-        where:query,
-        attributes
+        where: query,
+        attributes,
       });
-  
+
       if (resource) {
         return resource;
       }
-  
+
       throw new ResourceNotFoundError();
     }
 
-    public async create(data: MakeNullishOptional<M["_creationAttributes"]>): Promise<M> {
+    public async create(data: MakeNullishOptional<M['_creationAttributes']>): Promise<M> {
       const resource = this.model.create<M>(data);
-      if(!resource){
-        throw new ResourceNotFoundError(); 
+      if (!resource) {
+        throw new ResourceNotFoundError();
       }
-      return resource
+      return resource;
     }
 
     public async update(query:WhereOptions<Attributes<M>>, data: any): Promise<M> {
@@ -122,4 +125,4 @@ export abstract class SequelizeBaseRepository<M extends Model> implements BaseRe
 
       throw new ResourceNotFoundError();
     }
-} 
+}
