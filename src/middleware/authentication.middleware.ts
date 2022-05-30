@@ -8,7 +8,7 @@ function sendErrror(res: Response, reason: string) {
   });
 }
 export function authentication(req: Request, res: Response, next: NextFunction) {
-  const publicRoutes = new Set(['user/login', 'user/register', 'user/loginGoogle']);
+  const publicRoutes = new Set(['account/login', 'account/register', 'account/loginGoogle']);
   const token = req.get('token');
   const control = verifyToken(token);
   if (control.error) {

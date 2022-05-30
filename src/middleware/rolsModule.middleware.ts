@@ -10,7 +10,7 @@ function sendErrror(res: Response, reason: string) {
   });
 }
 export async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
-  const publicRoutes = new Set(['user/login', 'user/register', 'user/loginGoogle']);
+  const publicRoutes = new Set(['account/login', 'account/register', 'account/loginGoogle']);
   if (publicRoutes.has(req.params[0])) {
     return next();
   }
