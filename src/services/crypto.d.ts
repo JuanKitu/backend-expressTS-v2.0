@@ -1,4 +1,4 @@
-export interface Encryption{
-    hash:string,
-    salt:string,
+export interface Encryption {
+  hash: string;
+  salt: string;
 }

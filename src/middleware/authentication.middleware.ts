@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { createToken, verifyToken } from '../services/jwt.services';
 
-function sendErrror(res:Response, reason:string) {
+function sendErrror(res: Response, reason: string) {
   return res.status(501).json({
     error: true,
     message: reason,

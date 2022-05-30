@@ -1,4 +1,4 @@
-export interface GroupRolsI{
-    groupRol?:number,
-    rolName?:string
+export interface GroupRolsI {
+  groupRol?: number;
+  rolName?: string;
 }

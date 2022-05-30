@@ -12,14 +12,18 @@ const client = new OAuth2Client(process.env.CLIENT_ID);
 export function createToken(account: string) {
   if (process.env.SEED) {
     const secretKey: Secret = process.env.SEED;
-    return jwt.sign({
-      account,
-    }, secretKey, { expiresIn: process.env.EXPIRATION_TOKEN });
+    return jwt.sign(
+      {
+        account,
+      },
+      secretKey,
+      { expiresIn: process.env.EXPIRATION_TOKEN }
+    );
   }
   return false;
 }
 
-export async function verifyGoogle(token:string) {
+export async function verifyGoogle(token: string) {
   const ticket = await client.verifyIdToken({
     idToken: token,
     audience: process.env.CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
@@ -29,7 +33,7 @@ export async function verifyGoogle(token:string) {
   const payload = ticket.getPayload();
   if (payload) {
     // const userid = payload.sub;
-    const user:UserToken = {
+    const user: UserToken = {
       userName: payload.name,
       email: payload.email,
       img: payload.picture,
@@ -39,7 +43,7 @@ export async function verifyGoogle(token:string) {
   }
   return false;
 }
-export function verifyToken(token:string | undefined):TokenDecoded {
+export function verifyToken(token: string | undefined): TokenDecoded {
   const secretKey = process.env.SEED;
   if (!secretKey) {
     return {

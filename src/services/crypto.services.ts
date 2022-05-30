@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { Encryption } from './crypto';
 
-export function encryptPassword(password: string):Promise<Encryption> {
+export function encryptPassword(password: string): Promise<Encryption> {
   const promise = new Promise<Encryption>((resolve, reject) => {
     const salt: string = crypto.randomBytes(128).toString('base64');
     // need new salt to encrypt
@@ -18,10 +18,10 @@ export function encryptPassword(password: string):Promise<Encryption> {
   });
   return promise;
 }
-export function verifyPassword(password:string, salt:string):Promise<string> {
+export function verifyPassword(password: string, salt: string): Promise<string> {
   const promise = new Promise<string>((resolve, reject) => {
     crypto.pbkdf2(password, salt, 100, 64, 'sha512', (err, derivedKey) => {
-      const newHash:string = derivedKey.toString('hex');
+      const newHash: string = derivedKey.toString('hex');
       resolve(newHash);
       if (err) {
         reject(err);

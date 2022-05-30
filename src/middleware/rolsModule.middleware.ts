@@ -3,13 +3,13 @@ import { permissionService } from '../services/Permission.service';
 // import { petitionService } from '../services/Petition.service';
 import { rolService } from '../services/Rols.service';
 
-function sendErrror(res:Response, reason:string) {
+function sendErrror(res: Response, reason: string) {
   return res.status(501).json({
     error: true,
     message: reason,
   });
 }
-export async function rolsMiddleware(req:Request, res:Response, next:NextFunction) {
+export async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
   const publicRoutes = new Set(['user/login', 'user/register', 'user/loginGoogle']);
   if (publicRoutes.has(req.params[0])) {
     return next();

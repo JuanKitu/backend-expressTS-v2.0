@@ -30,14 +30,16 @@ app.use(express.static(path.resolve(__dirname, '../public')));
 /* ############################################################################################## */
 /* ###################################### importing routes ###################################### */
 
-app.route('/api/*').get(authentication, rolsMiddleware, requestHandler)
+app
+  .route('/api/*')
+  .get(authentication, rolsMiddleware, requestHandler)
   .post(authentication, rolsMiddleware, requestHandler)
   .put(authentication, rolsMiddleware, requestHandler)
   .delete(authentication, rolsMiddleware, requestHandler);
 /* ############################################################################################## */
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.listen((app.get('port')), () => {
+app.listen(app.get('port'), () => {
   // eslint-disable-next-line no-console
   console.log(clc.magenta.inverse.bold(`Server on: localhost:${app.get('port')}`));
 });

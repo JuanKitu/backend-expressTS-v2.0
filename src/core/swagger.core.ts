@@ -4,7 +4,7 @@ import path from 'path';
 
 const baseRouteENV = path.join(__dirname, '..', '..');
 dotenv.config({ path: `${baseRouteENV}/config/.env` });
-const swaggerDefinition:SwaggerDefinition = {
+const swaggerDefinition: SwaggerDefinition = {
   openapi: '3.0.0',
   info: {
     title: process.env.SWAGGER_TITLE || '',
@@ -22,7 +22,7 @@ const swaggerDefinition:SwaggerDefinition = {
     },
   ],
 };
-const options:Options = {
+const options: Options = {
   swaggerDefinition,
   // Paths to files containing OpenAPI definitions
   basePath: process.env.SWAGGER_OPTIONS_BASEPATH,
