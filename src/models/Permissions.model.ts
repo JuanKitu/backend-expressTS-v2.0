@@ -1,15 +1,15 @@
 import { Optional } from 'sequelize';
 import { Table, Model, Column, DataType, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { PermissionsI } from './permission';
-import Rols from './Rols.model';
+import Roles from './Roles.model';
 import Petitions from './Petitions.model';
 
-type PermissionsCreationAttributes = Optional<PermissionsI, 'account'>;
+type PermissionsCreationAttributes = Optional<PermissionsI, 'permission'>;
 @Table({
   timestamps: false,
   freezeTableName: false,
   modelName: 'Permissions',
-  schema: 'public',
+  // schema: 'public',
 })
 export default class Permissions extends Model<PermissionsI, PermissionsCreationAttributes> implements PermissionsI {
   @Column({
@@ -20,28 +20,19 @@ export default class Permissions extends Model<PermissionsI, PermissionsCreation
   })
   public permission!: number;
 
-  @ForeignKey(() => Rols)
+  @ForeignKey(() => Roles)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  public account!: number;
-
-  @ForeignKey(() => Rols)
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  public rol!: number;
+  public role!: number;
 
   @Column({
     type: DataType.STRING,
   })
   public routeName!: string;
 
-  @BelongsTo(() => Rols, { foreignKey: 'account' }) accounts!: Rols;
-
-  @BelongsTo(() => Rols, { foreignKey: 'rol' }) rols!: Rols;
+  @BelongsTo(() => Roles, { foreignKey: 'rol' }) Roles!: Roles;
 
   @HasMany(() => Petitions) petitions!: Petitions[];
 }

@@ -3,7 +3,8 @@ import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from 'sequelize
 import Permissions from './Permissions.model';
 import { PetitionsI } from './petition';
 
-type PetitionsCreationAttributes = Optional<PetitionsI, 'petition' | 'permission'>;
+// type PetitionsCreationAttributes = Optional<PetitionsI, 'petition' | 'permission'>;
+type PetitionsCreationAttributes = Optional<PetitionsI, 'petition'>;
 @Table({
   timestamps: false,
   freezeTableName: false,
@@ -22,8 +23,8 @@ export default class Petitions extends Model<PetitionsI, PetitionsCreationAttrib
   @ForeignKey(() => Permissions)
   @Column({
     type: DataType.INTEGER,
-    primaryKey: true,
     autoIncrement: false,
+    // primaryKey: true,
     allowNull: false,
   })
   public permission!: number;

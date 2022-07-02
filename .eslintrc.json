@@ -1,7 +1,8 @@
 {
   "env": {
     "es2021": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
   "extends": ["airbnb-base", "prettier", "plugin:prettier/recommended"],
   "parser": "@typescript-eslint/parser",
@@ -19,7 +20,8 @@
     "no-unused-expressions": ["error", { "allowTernary": true }],
     "no-console": "error",
     "max-len": ["error", { "code": 150 }],
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true, "optionalDependencies": false, "peerDependencies": false }]
   },
   "settings": {
     "import/resolver": {

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { permissionService } from '../services/Permission.service';
 // import { petitionService } from '../services/Petition.service';
-import { rolService } from '../services/Rols.service';
+import { userRoleService } from '../services/UserRole.service';
 
 function sendErrror(res: Response, reason: string) {
   return res.status(501).json({
@@ -19,30 +19,31 @@ export async function rolsMiddleware(req: Request, res: Response, next: NextFunc
     return sendErrror(res, 'user is not login');
   }
   try {
-    const queryArrayRols = await rolService.findAll({
+    const queryRols = await userRoleService.findAll({
       account,
     });
-    if (!queryArrayRols) {
+    if (!queryRols) {
       return sendErrror(res, 'rol is not exist');
     }
+    const rolList = queryRols.map((rol) => rol.role);
+
     const queryPermissions = await permissionService.findAll({
-      account,
+      role: rolList,
       routeName: req.params[0],
     });
     return queryPermissions.length !== 0 ? next() : sendErrror(res, "Don't have permissions");
 
-    /* queryPermissions.forEach(async (permissionO) => {
-      const queryPetition = await petitionService.findAll({
-        permission: permissionO.permission,
-      });
-      const arrayPetition = queryPetition.map((petition) => petition.petitionName);
-      if (arrayPetition.includes('all')) {
-        return next();
-      }
-      if (arrayPetition.includes(req.method.toLocaleLowerCase())) {
-        return next();
-      }
-    }); */
+    /* const permissionList = queryPermissions.map(permission => permission.permission);
+    const queryPetition = await petitionService.findAll({
+      permission: permissionList
+    });
+    const arrayPetition = queryPetition.map((petition) => petition.petitionName);
+    if (arrayPetition.includes('all')) {
+      return next();
+    }
+    if (arrayPetition.includes(req.method.toLocaleLowerCase())) {
+      return next();
+    } */
   } catch (err) {
     return res.status(500).json({
       err,

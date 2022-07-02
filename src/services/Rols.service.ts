@@ -1,10 +1,10 @@
 // import { ModelCtor } from 'sequelize-typescript';
-import Rols from '../models/Rols.model';
+import Roles from '../models/Roles.model';
 import SequelizeBaseRepository from '../core/repository.core';
 
-class RolService extends SequelizeBaseRepository<Rols> {
-  /* constructor(Model:ModelCtor<Rols>) {
+class RoleService extends SequelizeBaseRepository<Roles> {
+  /* constructor(Model:ModelCtor<Roles>) {
     super(Model);
   } */
 }
-export const rolService = new RolService(Rols);
+export const roleService = new RoleService(Roles);

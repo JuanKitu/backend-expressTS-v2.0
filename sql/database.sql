@@ -7,27 +7,25 @@ CREATE TABLE "Accounts"(
     "accountName" VARCHAR,
     PRIMARY KEY("account")
 );
-CREATE TABLE "GroupRols"(
-    "groupRol" SERIAL NOT NULL,
-    "rolName" VARCHAR(100),
-    PRIMARY KEY("groupRol")
+CREATE TABLE "Roles"(
+    role SERIAL NOT NULL,
+    "rolName" VARCHAR(200) NOT NULL,
+    PRIMARY KEY ("role")
 );
-CREATE TABLE "Rols"(
-    rol SERIAL NOT NULL,
-    "account" INTEGER NOT NULL,
-    "groupRol" INTEGER NOT NULL,
-    PRIMARY KEY ("account", "rol"),
-    FOREIGN KEY ("account") REFERENCES "Accounts",
-    FOREIGN KEY ("groupRol") REFERENCES "GroupRols"
+CREATE TABLE "UserRoles"(
+    account INTEGER NOT NULL,
+    role INTEGER NOT NULL,
+    PRIMARY KEY ("account","role"),
+    FOREIGN KEY ("role") REFERENCES "Roles",
+    FOREIGN KEY ("account") REFERENCES "Accounts"
 );
 
 CREATE TABLE "Permissions"(
     "permission" SERIAL NOT NULL,
-    rol INTEGER NOT NULL,
-    "account" INTEGER NOT NULL,
+    role INTEGER NOT NULL,
     "routeName" VARCHAR(200) NOT NULL,
     PRIMARY KEY ("permission"),
-    FOREIGN KEY ("account", "rol") REFERENCES "Rols"
+    FOREIGN KEY ("role") REFERENCES "Roles"
 );
 CREATE TABLE "Petitions"(
     petition SERIAL NOT NULL,

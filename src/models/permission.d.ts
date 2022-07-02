@@ -1,6 +1,5 @@
 export interface PermissionsI {
   permission?: number;
-  rol?: number;
-  account?: number;
+  role?: number;
   routeName?: string;
 }

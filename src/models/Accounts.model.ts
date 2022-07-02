@@ -1,7 +1,8 @@
 import { Optional } from 'sequelize';
-import { Table, Model, Column, DataType, HasMany } from 'sequelize-typescript';
+import { Table, Model, Column, DataType, BelongsToMany } from 'sequelize-typescript';
 import { AccountsI } from './account';
-import Rols from './Rols.model';
+import Roles from './Roles.model';
+import UserRoles from './UserRoles.model';
 
 export type AccountsCreationAttributes = Optional<AccountsI, 'account'>;
 @Table({
@@ -45,5 +46,5 @@ export default class Accounts extends Model<AccountsI, AccountsCreationAttribute
   public emailGoogle!: string;
 
   // cardinality
-  @HasMany(() => Rols) rol!: Rols[];
+  @BelongsToMany(() => Roles, () => UserRoles) rols!: Array<Roles & { UserRoles: UserRoles }>;
 }

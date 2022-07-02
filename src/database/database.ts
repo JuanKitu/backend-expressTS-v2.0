@@ -8,7 +8,7 @@ dotenv.config({ path: `${baseRouteENV}/config/.env` });
 if (!process.env.DB_PORT) {
   process.env.DB_PORT = '-1';
 }
-export const sequelize = new Sequelize({
+let sequelize = new Sequelize({
   database: process.env.DB_NAME,
   dialect: 'postgres',
   host: process.env.DB_HOST,
@@ -18,3 +18,12 @@ export const sequelize = new Sequelize({
   storage: ':memory:',
   models: [`${baseRoute}/models`],
 });
+
+if (process.env.NODE_ENV === 'test') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    database: 'test',
+    storage: ':memory:',
+  });
+}
+export = sequelize;

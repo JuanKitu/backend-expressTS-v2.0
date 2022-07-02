@@ -10,4 +10,5 @@ module.exports = {
       tsconfig: 'tsconfig.json',
     },
   },
+  globalSetup: './src/test/env.ts',
 };
