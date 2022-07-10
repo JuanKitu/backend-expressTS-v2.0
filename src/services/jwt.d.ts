@@ -7,9 +7,9 @@ export interface User {
 }
 
 export interface UserToken {
-  idUsuario?: number;
-  userName?: string;
-  email?: string;
+  account?: number;
+  accountName?: string;
+  emailGoogle?: string;
   img?: string;
   google?: boolean;
 }

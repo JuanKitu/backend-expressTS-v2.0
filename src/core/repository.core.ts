@@ -74,14 +74,16 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
     throw new ResourceNotFoundError();
   }
 
-  public async delete(query: WhereOptions<Attributes<M>>): Promise<boolean> {
+  public async delete(query: WhereOptions<Attributes<M>>, clearAllRecords?: boolean): Promise<boolean> {
     const resource = await this.findOne(query);
-
+    if (clearAllRecords) {
+      await this.model.destroy({ where: {} });
+      return true;
+    }
     if (resource) {
       await resource.destroy();
       return true;
     }
-
     throw new ResourceNotFoundError();
   }
 }

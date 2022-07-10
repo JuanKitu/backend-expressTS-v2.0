@@ -34,8 +34,8 @@ export async function verifyGoogle(token: string) {
   if (payload) {
     // const userid = payload.sub;
     const user: UserToken = {
-      userName: payload.name,
-      email: payload.email,
+      accountName: payload.name,
+      emailGoogle: payload.email,
       img: payload.picture,
       google: true,
     };

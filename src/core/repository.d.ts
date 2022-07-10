@@ -14,5 +14,5 @@ export interface BaseRepository {
 
   update(query: WhereOptions, data: Model): Promise<Model>;
 
-  delete(query: WhereOptions): Promise<boolean>;
+  delete(query: WhereOptions, clearAllRecords?: boolean): Promise<boolean>;
 }
