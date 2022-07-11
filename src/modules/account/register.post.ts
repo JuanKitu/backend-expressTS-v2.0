@@ -24,6 +24,19 @@ export default async function getRegister(req: Request, res: Response) {
         error: true,
       });
     }
+    if (!account.email) {
+      return res.status(502).json({
+        message: 'email undefined',
+        error: true,
+      });
+    }
+    const controlAccount = await accountService.findOne({ email: account.email });
+    if (controlAccount) {
+      return res.status(502).json({
+        message: 'account already exists',
+        error: true,
+      });
+    }
     const newEncrypt: Encryption = await encryptPassword(account.password);
 
     const newAccount: AccountsI = {
