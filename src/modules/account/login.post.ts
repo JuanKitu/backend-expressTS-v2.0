@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { accountService } from '../../services/Account.service';
 import { accountLogin } from './accountLogin';
 import { verifyPassword } from '../../services/crypto.services';
-import { createToken } from '../../services/jwt.services';
+import { createToken, verifyToken } from '../../services/jwt.services';
 
 /**
  * @swagger
@@ -15,6 +15,14 @@ import { createToken } from '../../services/jwt.services';
 export default async function postLogin(req: Request, res: Response) {
   const account: accountLogin = { ...req.body.account };
   try {
+    const getToken = req.get('token');
+    const control = verifyToken(getToken);
+    if (!control.error) {
+      return res.status(500).json({
+        message: 'you are login',
+        error: true,
+      });
+    }
     if (!account.password) {
       return res.status(505).json({
         message: 'password is undefined',

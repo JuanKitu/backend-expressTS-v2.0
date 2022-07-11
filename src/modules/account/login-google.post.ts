@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { accountService } from '../../services/Account.service';
 import { UserToken } from '../../services/jwt';
-import { createToken, verifyGoogle } from '../../services/jwt.services';
+import { createToken, verifyGoogle, verifyToken } from '../../services/jwt.services';
 
 // eslint-disable-next-line func-names
 const sendToken = async function (account: number | undefined, res: Response) {
@@ -25,6 +25,14 @@ const sendToken = async function (account: number | undefined, res: Response) {
   });
 };
 export default async function postLoginGoogle(req: Request, res: Response) {
+  const getToken = req.get('token');
+  const control = verifyToken(getToken);
+  if (!control.error) {
+    return res.status(500).json({
+      message: 'you are login',
+      error: true,
+    });
+  }
   const token = req.get('googleToken');
   try {
     if (!token) {
