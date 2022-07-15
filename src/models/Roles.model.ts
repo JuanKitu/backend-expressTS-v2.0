@@ -1,7 +1,7 @@
 import { Optional } from 'sequelize';
 import { Table, Model, Column, DataType, HasMany, BelongsToMany } from 'sequelize-typescript';
 import Accounts from './Accounts.model';
-import UserRoles from './UserRoles.model';
+import AccountRoles from './AccountRoles.model';
 import Permissions from './Permissions.model';
 import { RolesI } from './role';
 
@@ -25,10 +25,17 @@ export default class Roles extends Model<RolesI, RolesCreationAttributes> implem
     type: DataType.STRING,
     allowNull: false,
   })
-  public rolName!: string;
+  public roleName!: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  })
+  public defaultRole!: boolean;
 
   // cardinality
-  @BelongsToMany(() => Accounts, () => UserRoles) asd!: Array<Accounts & { UserRoles: UserRoles }>;
+  @BelongsToMany(() => Accounts, () => AccountRoles) asd!: Array<Accounts & { AccountRoles: AccountRoles }>;
 
   @HasMany(() => Permissions) permissions!: Permissions[];
 }

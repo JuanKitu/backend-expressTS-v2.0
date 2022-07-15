@@ -2,7 +2,7 @@ import { Optional } from 'sequelize';
 import { Table, Model, Column, DataType, BelongsToMany } from 'sequelize-typescript';
 import { AccountsI } from './account';
 import Roles from './Roles.model';
-import UserRoles from './UserRoles.model';
+import AccountRoles from './AccountRoles.model';
 
 export type AccountsCreationAttributes = Optional<AccountsI, 'account'>;
 @Table({
@@ -32,19 +32,22 @@ export default class Accounts extends Model<AccountsI, AccountsCreationAttribute
 
   @Column({
     type: DataType.STRING,
+    unique: true,
   })
   public accountName!: string;
 
   @Column({
     type: DataType.STRING,
+    unique: true,
   })
   public email!: string;
 
   @Column({
     type: DataType.STRING,
+    unique: true,
   })
   public emailGoogle!: string;
 
   // cardinality
-  @BelongsToMany(() => Roles, () => UserRoles) rols!: Array<Roles & { UserRoles: UserRoles }>;
+  @BelongsToMany(() => Roles, () => AccountRoles) rols!: Array<Roles & { AccountRoles: AccountRoles }>;
 }

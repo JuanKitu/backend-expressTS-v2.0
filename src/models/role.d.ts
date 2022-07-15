@@ -1,4 +1,5 @@
 export interface RolesI {
   role?: number;
-  rolName?: string;
+  roleName?: string;
+  defaultRole?: boolean;
 }

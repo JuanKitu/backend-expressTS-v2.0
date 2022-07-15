@@ -2,17 +2,17 @@ import { Optional } from 'sequelize';
 import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import Accounts from './Accounts.model';
 import Roles from './Roles.model';
-import { userRolesI } from './userRole';
+import { AccountRolesI } from './accountRole';
 
-type UserRolesCreationAttributes = Optional<userRolesI, 'role'>;
-// type UserRolesCreationAttributes = Optional<userRolesI, 'role' | 'account'>;
+type AccountRolesCreationAttributes = Optional<AccountRolesI, 'role'>;
+// type AccountRolesCreationAttributes = Optional<AccountRolesI, 'role' | 'account'>;
 @Table({
   timestamps: false,
   freezeTableName: false,
-  modelName: 'UserRoles',
+  modelName: 'AccountRoles',
   schema: 'public',
 })
-export default class UserRoles extends Model<userRolesI, UserRolesCreationAttributes> implements userRolesI {
+export default class AccountRoles extends Model<AccountRolesI, AccountRolesCreationAttributes> implements AccountRolesI {
   @ForeignKey(() => Roles)
   @Column({
     type: DataType.INTEGER,
