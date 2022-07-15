@@ -17,7 +17,7 @@ export default class AccountRoles extends Model<AccountRolesI, AccountRolesCreat
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
-    autoIncrement: true,
+    autoIncrement: false,
     allowNull: false,
   })
   public role!: number;
