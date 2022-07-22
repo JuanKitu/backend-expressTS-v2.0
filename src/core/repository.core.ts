@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { Model, ModelCtor } from 'sequelize-typescript';
 import { MakeNullishOptional } from 'sequelize/types/utils';
-import { Attributes, WhereOptions } from 'sequelize/types';
+import { Attributes, BulkCreateOptions, WhereOptions } from 'sequelize/types';
 import { BaseRepository } from './repository';
 import { BaseError } from './baseError.core';
 
@@ -58,6 +58,17 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
 
   public async create(data: MakeNullishOptional<M['_creationAttributes']>): Promise<M> {
     const resource = this.model.create<M>(data);
+    if (!resource) {
+      throw new ResourceNotFoundError();
+    }
+    return resource;
+  }
+
+  public async bulkCreate(
+    data: readonly MakeNullishOptional<M['_creationAttributes']>[],
+    options?: BulkCreateOptions<Attributes<M>> | undefined
+  ): Promise<M[]> {
+    const resource = this.model.bulkCreate<M>(data);
     if (!resource) {
       throw new ResourceNotFoundError();
     }

@@ -5,6 +5,8 @@ import { Encryption } from '../../services/crypto';
 import { encryptPassword } from '../../services/crypto.services';
 import { verifyToken } from '../../services/jwt.services';
 import { accountLogin } from './accountLogin';
+import { roleService } from '../../services/Rols.service';
+import { accountRoleService } from '../../services/AccountRole.service';
 // import { accountService } from '../../services/Account.service';
 
 export default async function getRegister(req: Request, res: Response) {
@@ -30,8 +32,8 @@ export default async function getRegister(req: Request, res: Response) {
         error: true,
       });
     }
-    const controlAccount = await accountService.findOne({ email: account.email });
-    if (controlAccount) {
+    const controlAccount = await accountService.findAll({ email: account.email });
+    if (controlAccount.length) {
       return res.status(502).json({
         message: 'account already exists',
         error: true,
@@ -45,7 +47,29 @@ export default async function getRegister(req: Request, res: Response) {
       email: account.email,
       accountName: account.accountName,
     };
-    await accountService.create(newAccount);
+    const reponseAccount = await accountService.create(newAccount);
+    if (!reponseAccount) {
+      return res.status(502).json({
+        message: 'error in create account',
+        error: true,
+      });
+    }
+    if (!reponseAccount.account) {
+      return res.status(502).json({
+        message: 'error in create account id is undefined',
+        error: true,
+      });
+    }
+    const roleList = await roleService.findAll({
+      defaultRole: true,
+    });
+    const setRoles = roleList.map((role) => {
+      return {
+        account: reponseAccount.account,
+        role: role.role,
+      };
+    });
+    await accountRoleService.bulkCreate(setRoles);
     return res.status(200).json({
       message: 'created',
       error: false,

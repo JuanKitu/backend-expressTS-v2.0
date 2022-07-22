@@ -1,37 +1,49 @@
 import { Request, Response, NextFunction } from 'express';
 import { permissionService } from '../services/Permission.service';
 // import { petitionService } from '../services/Petition.service';
-import { userRoleService } from '../services/UserRole.service';
+import { accountRoleService } from '../services/AccountRole.service';
 
-function sendErrror(res: Response, reason: string) {
+function sendError(res: Response, reason: string) {
   return res.status(501).json({
     error: true,
     message: reason,
   });
 }
+
 export async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
   const publicRoutes = new Set(['account/login', 'account/register', 'account/loginGoogle']);
   if (publicRoutes.has(req.params[0])) {
     return next();
   }
-  const account = req.get('account');
+  const { account } = res.locals;
   if (!account) {
-    return sendErrror(res, 'user is not login');
+    return sendError(res, 'user is not login');
   }
   try {
-    const queryRols = await userRoleService.findAll({
+    const queryRoles = await accountRoleService.findAll({
       account,
     });
-    if (!queryRols) {
-      return sendErrror(res, 'rol is not exist');
+    if (!queryRoles.length) {
+      return sendError(res, 'rol is not exist');
     }
-    const rolList = queryRols.map((rol) => rol.role);
-
-    const queryPermissions = await permissionService.findAll({
-      role: rolList,
-      routeName: req.params[0],
+    const rolList = queryRoles.map((rol) => rol.role);
+    const promiseRoleList: any = [];
+    rolList.forEach((role: number) => {
+      const roleQuery = permissionService.findAll({
+        role,
+        routeName: req.params[0],
+      });
+      promiseRoleList.push(roleQuery);
     });
-    return queryPermissions.length !== 0 ? next() : sendErrror(res, "Don't have permissions");
+    const controlQuery = await Promise.all(promiseRoleList);
+    let havePermissions = false;
+    // eslint-disable-next-line consistent-return
+    controlQuery.forEach((query) => {
+      if (query.length !== 0) {
+        havePermissions = true;
+      }
+    });
+    return havePermissions ? next() : sendError(res, "Don't have permissions");
 
     /* const permissionList = queryPermissions.map(permission => permission.permission);
     const queryPetition = await petitionService.findAll({

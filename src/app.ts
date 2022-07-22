@@ -19,7 +19,6 @@ app.set('port', process.env.PORT || 3000);
 app.use(morgan('dev'));
 app.use(json({ limit: '50mb' }));
 app.use(cors());
-
 app.use(express.static(path.resolve(__dirname, '../public')));
 
 app

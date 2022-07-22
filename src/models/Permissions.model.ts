@@ -32,7 +32,7 @@ export default class Permissions extends Model<PermissionsI, PermissionsCreation
   })
   public routeName!: string;
 
-  @BelongsTo(() => Roles, { foreignKey: 'rol' }) Roles!: Roles;
+  @BelongsTo(() => Roles, { foreignKey: 'role' }) Roles!: Roles;
 
   @HasMany(() => Petitions) petitions!: Petitions[];
 }

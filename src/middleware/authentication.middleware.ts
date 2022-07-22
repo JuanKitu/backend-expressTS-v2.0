@@ -21,8 +21,9 @@ export function authentication(req: Request, res: Response, next: NextFunction) 
   // refresh token
   const newToken = createToken(control.decoded.account);
   if (newToken) {
-    res.setHeader('token', newToken);
+    res.set('token', [newToken]);
   }
-  res.setHeader('account', control.decoded.account);
+  res.set('account', [control.decoded.account]);
+  res.locals.account = control.decoded.account;
   return next();
 }

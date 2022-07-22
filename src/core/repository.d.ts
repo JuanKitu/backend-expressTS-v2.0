@@ -2,6 +2,7 @@
 import { Model } from 'sequelize-typescript';
 import { WhereOptions } from 'sequelize/types';
 import { MakeNullishOptional } from 'sequelize/types/utils';
+import { BulkCreateOptions } from 'sequelize';
 
 export interface BaseRepository {
   findAll(query?: WhereOptions, attributes?: string[]): Promise<Model[]>;
@@ -11,6 +12,8 @@ export interface BaseRepository {
   findOne(query: WhereOptions, attributes?: string[]): Promise<Model>;
 
   create(data: MakeNullishOptional): Promise<Model>;
+
+  bulkCreate(data: MakeNullishOptional, options?: BulkCreateOptions): Promise<Model[]>;
 
   update(query: WhereOptions, data: Model): Promise<Model>;
 
