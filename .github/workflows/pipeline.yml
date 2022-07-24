@@ -5,6 +5,7 @@ on:
       - main
 env:
   SEED: ${{secrets.SEED}}
+  PORT: ${{secrets.PORT}}
   EXPIRATION_TOKEN: ${{secrets.SEED}}
 jobs:
   deploy:
