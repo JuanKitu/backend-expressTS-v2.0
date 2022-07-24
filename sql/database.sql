@@ -3,7 +3,7 @@ CREATE TABLE "Accounts"
     "account"     SERIAL      NOT NULL,
     email         VARCHAR(50) NOT NULL UNIQUE,
     hash          VARCHAR     NOT NULL,
-    "emailGoogle" VARCHAR(50) NOT NULL UNIQUE,
+    "emailGoogle" VARCHAR(50) UNIQUE,
     salt          VARCHAR,
     "accountName" VARCHAR UNIQUE,
     PRIMARY KEY ("account")
@@ -12,7 +12,7 @@ CREATE TABLE "Roles"
 (
     role          SERIAL       NOT NULL,
     "roleName"    VARCHAR(200) NOT NULL,
-    "defaultRole" BOOLEAN      NOT NULL DEFAULT FALSE;
+    "defaultRole" BOOLEAN      NOT NULL DEFAULT FALSE
 PRIMARY KEY ("role")
 );
 CREATE TABLE "AccountRoles"
@@ -42,5 +42,4 @@ CREATE TABLE "Petitions"
 );
 
 INSERT INTO "Roles"(role, "roleName", "defaultRole")
-VALUES (default, 'customer_user', true),
-       (default, 'admin_user', false);
+VALUES (default, 'customer_user', true), (default, 'admin_user', false);
