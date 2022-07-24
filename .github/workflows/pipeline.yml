@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+env:
+  SEED: ${{secrets.SEED}}
+  EXPIRATION_TOKEN: ${{secrets.SEED}}
 jobs:
   deploy:
     runs-on: ubuntu-18.04
@@ -21,8 +24,5 @@ jobs:
         run: npm run lint
       - name: run Test
         run: npm run test
-        with:
-          SEED: ${{secrets.SEED}}
-          EXPIRATION_TOKEN: ${{secrets.SEED}}
       - name: run Build
         run: npm run build
