@@ -14,6 +14,7 @@ if (process.env.NODE_ENV === 'test') {
     dialect: 'sqlite',
     database: 'test',
     storage: ':memory:',
+    models: [`${baseRoute}/models`],
   });
 } else {
   sequelize = new Sequelize({
