@@ -3,11 +3,9 @@ import express, { json, urlencoded } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
-import swaggerUi from 'swagger-ui-express';
 import { requestHandler } from './middleware/routingModule.middleware';
 import { authentication } from './middleware/authentication.middleware';
 import { rolsMiddleware } from './middleware/rolsModule.middleware';
-import swaggerSpec from './core/swagger.core';
 
 // import { stream } from './middlewares/winston';
 
@@ -27,6 +25,5 @@ app
   .post(requestHandler)
   .put(authentication, rolsMiddleware, requestHandler)
   .delete(authentication, rolsMiddleware, requestHandler);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
