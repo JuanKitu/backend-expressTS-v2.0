@@ -8,8 +8,15 @@ dotenv.config({ path: `${baseRouteENV}/config/.env` });
 if (!process.env.DB_PORT) {
   process.env.DB_PORT = '-1';
 }
-let sequelize;
-if (process.env.NODE_ENV !== 'test') {
+let sequelize: Sequelize;
+if (process.env.NODE_ENV === 'test') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    database: 'test',
+    storage: ':memory:',
+    models: [`${baseRoute}/models`],
+  });
+} else {
   sequelize = new Sequelize({
     database: process.env.DB_NAME,
     dialect: 'postgres',
@@ -19,14 +26,6 @@ if (process.env.NODE_ENV !== 'test') {
     port: parseInt(process.env.DB_PORT, 10),
     storage: ':memory:',
     models: [`${baseRoute}/models`],
-  });
-}
-
-if (process.env.NODE_ENV === 'test') {
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    database: 'test',
-    storage: ':memory:',
   });
 }
 export = sequelize;
