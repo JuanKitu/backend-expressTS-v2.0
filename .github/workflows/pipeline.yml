@@ -2,7 +2,13 @@ name: Deployment Pipeline
 on:
   push:
     branches:
-      - main
+      - master
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
 env:
   SEED: ${{secrets.SEED}}
   PORT: ${{secrets.PORT}}
@@ -16,11 +22,15 @@ env:
   SWAGGER_SERVER_DESCRIPTION: ${{secrets.SWAGGER_SERVER_DESCRIPTION}}
   SWAGGER_OPTIONS_BASEPATH: ${{secrets.SWAGGER_OPTIONS_BASEPATH}}
   SWAGGER_OPTIONS_APIS: ${{secrets.SWAGGER_OPTIONS_APIS}}
-
 jobs:
   deploy:
+    permissions: write-all
     runs-on: ubuntu-18.04
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.10.0
+        with:
+          access_token: ${{ github.token }}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -34,6 +44,7 @@ jobs:
       - name: run Lint
         run: npm run lint
       - name: run Test
+        #if: ${{github.event_name == 'push'}}
         run: npm run test
       - name: run Build
         run: npm run build
