@@ -24,9 +24,10 @@ env:
   SWAGGER_OPTIONS_APIS: ${{secrets.SWAGGER_OPTIONS_APIS}}
 jobs:
   deploy:
+    permissions: write-all
     runs-on: ubuntu-18.04
     steps:
-      - name: cancel previous redundant builds
+      - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
