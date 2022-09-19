@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { permissionService } from '../services/Permission.service';
 // import { petitionService } from '../services/Petition.service';
 import { accountRoleService } from '../services/AccountRole.service';
+import ITreeFile from '../interfaces/ITreeFile';
+import { getModuleByUrl } from '../core/pathToTreeFile.core';
 
 function sendError(res: Response, reason: string) {
   return res.status(501).json({
@@ -10,7 +12,7 @@ function sendError(res: Response, reason: string) {
   });
 }
 
-export async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function rolesMiddleware(req: Request, res: Response, next: NextFunction) {
   const publicRoutes = new Set(['account/login', 'account/register', 'account/loginGoogle']);
   if (publicRoutes.has(req.params[0])) {
     return next();
@@ -28,10 +30,19 @@ export async function rolsMiddleware(req: Request, res: Response, next: NextFunc
     }
     const rolList = queryRoles.map((rol) => rol.role);
     const promiseRoleList: any = [];
+    /* added feat tree routes */
+    const tree: ITreeFile = req.app.get('tree');
+    const method = req.method.toLocaleLowerCase();
+    const asd = `${req.params[0]}.${method}.js`;
+    const url = getModuleByUrl(asd, tree)
+      .pathname.replace(/\.(\w+).(js|ts)$/, '')
+      .replace(/\[/g, '\\[')
+      .replace(/]/g, '\\]');
+    /* ###################### */
     rolList.forEach((role: number) => {
       const roleQuery = permissionService.findAll({
         role,
-        routeName: req.params[0],
+        routeName: url,
       });
       promiseRoleList.push(roleQuery);
     });
@@ -56,10 +67,10 @@ export async function rolsMiddleware(req: Request, res: Response, next: NextFunc
     if (arrayPetition.includes(req.method.toLocaleLowerCase())) {
       return next();
     } */
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).json({
       err,
-      message: 'error in the trycatch rols middleware',
+      message: 'error in the try catch roles middleware',
     });
   }
 }

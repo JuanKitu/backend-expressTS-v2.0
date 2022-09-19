@@ -1,20 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { ModuleFunction } from './routingModule';
+import ITreeFile from '../interfaces/ITreeFile';
+import { getModuleByUrl } from '../core/pathToTreeFile.core';
+// import { ServerLog } from '../services/logger.services';
 
 export async function requestHandler(req: Request, res: Response, next: NextFunction) {
   const method = req.method.toLocaleLowerCase();
-  const moduleName = `../modules/${req.url.replace('/api/', '') || '501'}.${method}`;
+  const tree: ITreeFile = req.app.get('tree');
   let moduleFunction: ModuleFunction = await import(`../modules/errors/501.${method}`);
-  // req.params[0] == 'user/login' ? moduleName = '../modules/user/login.get' : moduleName;
   try {
-    moduleFunction = await import(moduleName);
-  } catch (err) {
-    // insert log
-    next(new Error(`Module ${moduleName} not available.`));
+    const { params, pathname } = getModuleByUrl(`${req.params[0]}.${method}.js`, tree);
+    req.body = { ...params, ...req.body };
+    moduleFunction = await import(`../modules/${pathname.replace(/\.(js|ts)$/, '')}`);
+  } catch (err: any) {
+    // ServerLog.warn(err.message);
+    moduleFunction = await import(`../modules/errors/501.${method}`);
   } finally {
-    // control role and login in the if
-    if (moduleFunction) {
-      moduleFunction.default(req, res, next);
-    }
+    moduleFunction.default(req, res, next);
   }
 }

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { createToken, verifyToken } from '../services/jwt.services';
 
-function sendErrror(res: Response, reason: string) {
+function sendError(res: Response, reason: string) {
   return res.status(501).json({
     error: true,
     message: reason,
@@ -15,7 +15,7 @@ export function authentication(req: Request, res: Response, next: NextFunction) 
     if (publicRoutes.has(req.params[0])) {
       return next();
     }
-    return sendErrror(res, control.message);
+    return sendError(res, control.message);
     // return res.redirect('/api/user/login')
   }
   // refresh token
