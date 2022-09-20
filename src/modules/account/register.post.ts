@@ -19,7 +19,7 @@ export default async function getRegister(req: Request, res: Response) {
         error: true,
       });
     }
-    const account: accountLogin = { ...req.body.account };
+    const account: accountLogin = { ...req.body };
     if (!account.password) {
       return res.status(502).json({
         message: 'password undefined',
@@ -47,14 +47,14 @@ export default async function getRegister(req: Request, res: Response) {
       email: account.email,
       accountName: account.accountName,
     };
-    const reponseAccount = await accountService.create(newAccount);
-    if (!reponseAccount) {
+    const responseAccount = await accountService.create(newAccount);
+    if (!responseAccount) {
       return res.status(502).json({
         message: 'error in create account',
         error: true,
       });
     }
-    if (!reponseAccount.account) {
+    if (!responseAccount.account) {
       return res.status(502).json({
         message: 'error in create account id is undefined',
         error: true,
@@ -65,7 +65,7 @@ export default async function getRegister(req: Request, res: Response) {
     });
     const setRoles = roleList.map((role) => {
       return {
-        account: reponseAccount.account,
+        account: responseAccount.account,
         role: role.role,
       };
     });

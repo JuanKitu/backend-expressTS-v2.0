@@ -1,24 +1,11 @@
 import { NextFunction, Response, Request } from 'express';
+import { sendError } from '../core/traffic.core';
 
 export default function loginMiddleware(req: Request, res: Response, next: NextFunction) {
-  const { password, username } = req.body;
-
-  // check if send password and username
-  if (!username) {
-    res.status(400).json({
-      message: 'username is undefined',
-      error: true,
-    });
-    return;
-  }
-
+  const { password, accountName } = req.body;
+  // check if send password and accountName
+  if (!accountName) return sendError(res, 400, 'accountName is undefined');
   // login...
-  if (!password) {
-    res.status(400).json({
-      message: 'password is undefined',
-      error: true,
-    });
-    return;
-  }
-  next();
+  if (!password) return sendError(res, 400, 'password is undefined');
+  return next();
 }

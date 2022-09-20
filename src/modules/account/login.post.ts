@@ -3,6 +3,8 @@ import { accountService } from '../../services/Account.service';
 import { accountLogin } from './accountLogin';
 import { verifyPassword } from '../../services/crypto.services';
 import { createToken, verifyToken } from '../../services/jwt.services';
+import { sendError, sendSuccess } from '../../core/traffic.core';
+import loginMiddleware from '../../middleware/login.middleware';
 
 /**
  * @swagger
@@ -12,8 +14,8 @@ import { createToken, verifyToken } from '../../services/jwt.services';
  *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
  */
 
-export default async function postLogin(req: Request, res: Response) {
-  const account: accountLogin = { ...req.body.account };
+async function postLogin(req: Request, res: Response) {
+  const account: accountLogin = { ...req.body };
   try {
     const getToken = req.get('token');
     const control = verifyToken(getToken);
@@ -68,14 +70,11 @@ export default async function postLogin(req: Request, res: Response) {
       });
     }
     res.set('token', [token]);
-    return res.status(200).json({
-      token,
-      error: false,
-    });
-  } catch (err) {
-    return res.status(501).json({
-      message: err,
-      error: true,
-    });
+    return sendSuccess(res, 'login successful', { token });
+  } catch (err: any) {
+    return sendError(res, 200, err.message);
   }
+}
+export default function route(req: Request, res: Response) {
+  loginMiddleware(req, res, () => postLogin(req, res));
 }

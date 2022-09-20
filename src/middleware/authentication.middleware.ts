@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { sendError } from '../core/traffic.core';
 import { createToken, verifyToken } from '../services/jwt.services';
 
-function sendError(res: Response, reason: string) {
-  return res.status(501).json({
-    error: true,
-    message: reason,
-  });
-}
 export function authentication(req: Request, res: Response, next: NextFunction) {
   const publicRoutes = new Set(['account/login', 'account/register', 'account/loginGoogle']);
   const token = req.get('token');
@@ -15,7 +10,7 @@ export function authentication(req: Request, res: Response, next: NextFunction) 
     if (publicRoutes.has(req.params[0])) {
       return next();
     }
-    return sendError(res, control.message);
+    return sendError(res, 500, control.message);
     // return res.redirect('/api/user/login')
   }
   // refresh token

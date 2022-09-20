@@ -1,46 +1,22 @@
 import { NextFunction, Response, Request } from 'express';
 import { accountService } from '../services/Account.service';
+import { sendError } from '../core/traffic.core';
 
 export default async function registerMiddleware(req: Request, res: Response, next: NextFunction) {
-  const { password, username, email } = req.body;
+  const { password, accountName, email } = req.body;
 
-  // check if send username
-  if (!username) {
-    res.status(400).json({
-      message: 'username is undefined',
-      error: true,
-    });
-    return;
-  }
+  // check if send accountName
+  if (!accountName) return sendError(res, 400, 'accountName is undefined');
 
   // check if send password
-  if (!password) {
-    res.status(400).json({
-      message: 'password is undefined',
-      error: true,
-    });
-    return;
-  }
-
+  if (!password) return sendError(res, 400, 'password is undefined');
   // check if send email
-  if (!email) {
-    res.status(400).json({
-      message: 'email is undefined',
-      error: true,
-    });
-    return;
-  }
+  if (!email) return sendError(res, 400, 'email is undefined');
 
-  // check if username already exist
+  // check if accountName already exist
   // @ts-ignore
-  const account = await accountService.findOne({ username });
-  if (account) {
-    res.status(400).json({
-      message: 'username already exist',
-      error: true,
-    });
-    return;
-  }
+  const account = await accountService.findOne({ accountName });
+  if (account) return sendError(res, 400, 'accountName already exist');
 
-  next();
+  return next();
 }

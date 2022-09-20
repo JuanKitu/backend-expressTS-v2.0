@@ -4,13 +4,7 @@ import { permissionService } from '../services/Permission.service';
 import { accountRoleService } from '../services/AccountRole.service';
 import ITreeFile from '../interfaces/ITreeFile';
 import { getModuleByUrl } from '../core/pathToTreeFile.core';
-
-function sendError(res: Response, reason: string) {
-  return res.status(501).json({
-    error: true,
-    message: reason,
-  });
-}
+import { sendError } from '../core/traffic.core';
 
 export async function rolesMiddleware(req: Request, res: Response, next: NextFunction) {
   const publicRoutes = new Set(['account/login', 'account/register', 'account/loginGoogle']);
@@ -19,14 +13,14 @@ export async function rolesMiddleware(req: Request, res: Response, next: NextFun
   }
   const { account } = res.locals;
   if (!account) {
-    return sendError(res, 'user is not login');
+    return sendError(res, 500, 'user is not login');
   }
   try {
     const queryRoles = await accountRoleService.findAll({
       account,
     });
     if (!queryRoles.length) {
-      return sendError(res, 'rol is not exist');
+      return sendError(res, 500, 'rol is not exist');
     }
     const rolList = queryRoles.map((rol) => rol.role);
     const promiseRoleList: any = [];
@@ -54,7 +48,7 @@ export async function rolesMiddleware(req: Request, res: Response, next: NextFun
         havePermissions = true;
       }
     });
-    return havePermissions ? next() : sendError(res, "Don't have permissions");
+    return havePermissions ? next() : sendError(res, 500, "Don't have permissions");
 
     /* const permissionList = queryPermissions.map(permission => permission.permission);
     const queryPetition = await petitionService.findAll({
