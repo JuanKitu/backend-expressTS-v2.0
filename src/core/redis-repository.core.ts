@@ -1,4 +1,4 @@
-import client from '../database/redis.db';
+import { client } from '../database/redis.db';
 
 export async function setValueCache(name: string, value: JSON | string | number) {
   if (typeof value === 'object') {

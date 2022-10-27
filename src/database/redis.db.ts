@@ -1,8 +1,9 @@
-import { createClient } from 'redis';
+import { Client } from 'redis-om';
 
-const client = createClient();
-// eslint-disable-next-line no-console
-client.on('error', (err) => console.log('Redis client Error', err));
-client.connect().then();
+export const client = new Client();
 
-export default client;
+export const createClient = async () => {
+  if (!client.isOpen()) {
+    await client.open('redis://localhost:6379');
+  }
+};

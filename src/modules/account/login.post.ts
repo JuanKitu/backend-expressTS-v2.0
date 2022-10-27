@@ -15,7 +15,7 @@ import loginMiddleware from '../../middleware/login.middleware';
  */
 
 async function postLogin(req: Request, res: Response) {
-  const account: accountLogin = { ...req.body };
+  const account: accountLogin = { password: req.body.password, email: req.body.email, accountName: req.body.accountName };
   try {
     const getToken = req.get('token');
     const control = verifyToken(getToken);
@@ -25,18 +25,7 @@ async function postLogin(req: Request, res: Response) {
         error: true,
       });
     }
-    if (!account.password) {
-      return res.status(505).json({
-        message: 'password is undefined',
-        error: true,
-      });
-    }
-    if (!account.email) {
-      return res.status(505).json({
-        message: 'email is undefined',
-        error: true,
-      });
-    }
+    if (!account.password) return sendError(res, 400, 'password is undefined');
     const selectAccount = await accountService.findOne(
       {
         email: account.email,
@@ -44,35 +33,23 @@ async function postLogin(req: Request, res: Response) {
       ['hash', 'salt', 'account']
     );
     if (!selectAccount) {
-      return res.status(505).json({
-        message: 'account not exist',
-        error: true,
-      });
+      return sendError(res, 505, 'account not exist');
     }
     if (!selectAccount.account) {
-      return res.status(505).json({
-        message: 'account not exist',
-        error: true,
-      });
+      return sendError(res, 505, 'account not exist');
     }
     const newHash = await verifyPassword(account.password, selectAccount.salt);
     if (newHash !== selectAccount.hash) {
-      return res.status(505).json({
-        message: 'password is wrong',
-        error: true,
-      });
+      return sendError(res, 505, 'password is wrong');
     }
     const token = createToken(selectAccount.account.toString());
     if (!token) {
-      return res.status(505).json({
-        message: 'token creation error',
-        error: true,
-      });
+      return sendError(res, 505, 'token creation error');
     }
     res.set('token', [token]);
     return sendSuccess(res, 'login successful', { token });
   } catch (err: any) {
-    return sendError(res, 200, err.message);
+    return sendError(res, 501, err.message);
   }
 }
 export default function route(req: Request, res: Response) {

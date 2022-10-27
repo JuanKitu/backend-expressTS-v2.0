@@ -41,7 +41,7 @@ export const getModuleByUrl = (url: string, tree: ITreeFile): IModulePath => {
   // check if subfolder
   if (url.includes('/')) {
     // parse url
-    const { pathname = '', nextPath = '' } = /^(?<pathname>\w+)\/(?<nextPath>.*)$/.exec(url)?.groups || {};
+    const { pathname = '', nextPath = '' } = /^(?<pathname>(?:\w+|[-_])*)\/(?<nextPath>.*)$/.exec(url)?.groups || {};
 
     // check if exist static folder
     const staticFolder: ITreeFile | undefined = tree.folders.find((folder) => folder.name === pathname);
@@ -81,14 +81,21 @@ export const getModuleByUrl = (url: string, tree: ITreeFile): IModulePath => {
   }
 
   // check and get dynamic file
-  const paramFile: string | undefined = tree.files.find((file) => /^\[(\w+)]+\.(\w+)\.(js|ts)$/.exec(file));
+  const paramFiles: string[] = tree.files.filter((file) => /^\[(?<nameparam>.*)\]+\.(?<method>(\w+))\.(js|ts)$/.exec(file));
+  if (!paramFiles.length) {
+    throw new NoFileExistError(`no file exist: ${url}`);
+  }
+  // get method
+  const method = /^.*\.(?<method>\w+)\./.exec(url)?.groups?.method || 'get';
+  // check if is same method paramFile
+  const paramFile: string = paramFiles.find((file: string) => file.includes(`.${method}.`)) || '';
   if (!paramFile) {
     throw new NoFileExistError(`no file exist: ${url}`);
   }
 
   const params: IPPropose = {};
   const keyParam: string = /^\[(?<nameparam>.*)]\.\w+\.(js|ts)$/.exec(paramFile)?.groups?.nameparam ?? '';
-  params[keyParam] = /^(?<nameparam>\w+)\.\w+\.(js|ts)$/.exec(url)?.groups?.nameparam ?? '';
+  params[keyParam] = /^(?<nameparam>(?:\w+|[-_])*)\.\w+\.(js|ts)$/.exec(url)?.groups?.nameparam ?? '';
 
   return {
     pathname: paramFile,

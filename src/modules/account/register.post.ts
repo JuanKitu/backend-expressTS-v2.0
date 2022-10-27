@@ -4,61 +4,33 @@ import { accountService } from '../../services/Account.service';
 import { Encryption } from '../../services/crypto';
 import { encryptPassword } from '../../services/crypto.services';
 import { verifyToken } from '../../services/jwt.services';
-import { accountLogin } from './accountLogin';
 import { roleService } from '../../services/Rols.service';
 import { accountRoleService } from '../../services/AccountRole.service';
+import { sendError, sendSuccess } from '../../core/traffic.core';
+import registerMiddleware from '../../middleware/register.middleware';
 // import { accountService } from '../../services/Account.service';
 
-export default async function getRegister(req: Request, res: Response) {
+async function postRegister(req: Request, res: Response) {
   try {
     const getToken = req.get('token');
     const control = verifyToken(getToken);
     if (!control.error) {
-      return res.status(500).json({
-        message: 'you are login',
-        error: true,
-      });
+      return sendError(res, 501, 'you are login');
     }
-    const account: accountLogin = { ...req.body };
-    if (!account.password) {
-      return res.status(502).json({
-        message: 'password undefined',
-        error: true,
-      });
-    }
-    if (!account.email) {
-      return res.status(502).json({
-        message: 'email undefined',
-        error: true,
-      });
-    }
-    const controlAccount = await accountService.findAll({ email: account.email });
-    if (controlAccount.length) {
-      return res.status(502).json({
-        message: 'account already exists',
-        error: true,
-      });
-    }
-    const newEncrypt: Encryption = await encryptPassword(account.password);
-
+    const { password, accountName, email } = req.body;
+    const newEncrypt: Encryption = await encryptPassword(password);
     const newAccount: AccountsI = {
       hash: newEncrypt.hash,
       salt: newEncrypt.salt,
-      email: account.email,
-      accountName: account.accountName,
+      email,
+      accountName,
     };
     const responseAccount = await accountService.create(newAccount);
     if (!responseAccount) {
-      return res.status(502).json({
-        message: 'error in create account',
-        error: true,
-      });
+      return sendError(res, 501, 'error in create account');
     }
     if (!responseAccount.account) {
-      return res.status(502).json({
-        message: 'error in create account id is undefined',
-        error: true,
-      });
+      return sendError(res, 501, 'error in create account id is undefined');
     }
     const roleList = await roleService.findAll({
       defaultRole: true,
@@ -70,14 +42,11 @@ export default async function getRegister(req: Request, res: Response) {
       };
     });
     await accountRoleService.bulkCreate(setRoles);
-    return res.status(200).json({
-      message: 'created',
-      error: false,
-    });
-  } catch (err) {
-    return res.status(501).json({
-      message: err,
-      error: true,
-    });
+    return sendSuccess(res, 'Account created', {});
+  } catch (err: any) {
+    return sendError(res, 501, err.message);
   }
+}
+export default async function route(req: Request, res: Response) {
+  await registerMiddleware(req, res, () => postRegister(req, res));
 }

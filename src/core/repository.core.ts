@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { Model, ModelCtor } from 'sequelize-typescript';
 import { MakeNullishOptional } from 'sequelize/types/utils';
-import { Attributes, BulkCreateOptions, WhereOptions } from 'sequelize/types';
+import { Attributes, BulkCreateOptions, WhereOptions, Includeable } from 'sequelize/types';
 import { BaseRepository } from './repository';
 import { BaseError } from './baseError.core';
 
@@ -19,10 +19,11 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
     this.model = model;
   }
 
-  public async findAll(query?: WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M[]> {
+  public async findAll(query?: WhereOptions<Attributes<M>>, attributes?: string[], include?: Includeable | Includeable[] | undefined): Promise<M[]> {
     const resource = await this.model.findAll({
       where: query,
       attributes,
+      include,
     });
     if (resource) {
       return resource;
@@ -43,17 +44,14 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
     throw new ResourceNotFoundError();
   }
 
-  public async findOne(query: WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M> {
+  public async findOne(query: WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M | null> {
     const resource = await this.model.findOne({
       where: query,
       attributes,
     });
+    return resource;
 
-    if (resource) {
-      return resource;
-    }
-
-    throw new ResourceNotFoundError();
+    // throw new ResourceNotFoundError();
   }
 
   public async create(data: MakeNullishOptional<M['_creationAttributes']>): Promise<M> {
@@ -83,6 +81,12 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
     }
 
     throw new ResourceNotFoundError();
+  }
+
+  public query(query: string): Promise<M> {
+    return this.query(query);
+
+    // throw new ResourceNotFoundError();
   }
 
   public async delete(query: WhereOptions<Attributes<M>>, clearAllRecords?: boolean): Promise<boolean> {
