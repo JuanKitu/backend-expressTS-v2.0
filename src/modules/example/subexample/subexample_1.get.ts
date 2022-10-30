@@ -4,6 +4,6 @@ export default async function subExample1(req: Request, res: Response) {
   return res.status(200).send({
     error: false,
     code: 200,
-    message: 'HOLA SUB XD',
+    message: 'hi',
   });
 }
