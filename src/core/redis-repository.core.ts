@@ -1,3 +1,4 @@
+/*
 import { client } from '../database/redis.db';
 
 export async function setValueCache(name: string, value: JSON | string | number) {
@@ -19,3 +20,4 @@ export async function getValueCache(name: string) {
   }
   return value;
 }
+*/

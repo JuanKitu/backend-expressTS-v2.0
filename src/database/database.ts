@@ -28,4 +28,4 @@ if (process.env.NODE_ENV === 'test') {
     models: [`${baseRoute}/models`],
   });
 }
-export = sequelize;
+export default sequelize;

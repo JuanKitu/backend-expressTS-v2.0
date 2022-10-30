@@ -6,14 +6,6 @@ import { createToken, verifyToken } from '../../services/jwt.services';
 import { sendError, sendSuccess } from '../../core/traffic.core';
 import loginMiddleware from '../../middleware/login.middleware';
 
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: Retrieve a list of JSONPlaceholder users
- *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
- */
-
 async function postLogin(req: Request, res: Response) {
   const account: accountLogin = { password: req.body.password, email: req.body.email, accountName: req.body.accountName };
   try {
