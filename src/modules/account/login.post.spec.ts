@@ -7,9 +7,9 @@ import { verifyPassword } from '../../services/crypto.services';
 const api = request(app);
 
 const account = {
-  accountName: 'nekane',
-  email: 'nekane@nekane.com',
-  password: 'nekaneSweet',
+  accountName: 'test',
+  email: 'test@test.com',
+  password: 'test',
 };
 
 const res = api.post('/api/account/register');
@@ -44,7 +44,7 @@ describe('User registration', () => {
   test('save users to database', (done) => {
     res.then(async () => {
       const queryAccount = await accountService.findAll({
-        email: 'nekane@nekane.com',
+        email: 'test@test.com',
       });
       expect(queryAccount.length).toBe(1);
       done();
@@ -53,23 +53,23 @@ describe('User registration', () => {
   test('save accountName and email to database', (done) => {
     res.then(async () => {
       const queryAccount = await accountService.findAll({
-        email: 'nekane@nekane.com',
+        email: 'test@test.com',
       });
       const newAccount = queryAccount[0];
       expect(newAccount).not.toBe(undefined);
-      expect(newAccount.accountName).toBe('nekane');
-      expect(newAccount.email).toBe('nekane@nekane.com');
+      expect(newAccount.accountName).toBe('test');
+      expect(newAccount.email).toBe('test@test.com');
       done();
     });
   });
   test('hashes the password in database', (done) => {
     res.then(async () => {
       const queryAccount = await accountService.findAll({
-        email: 'nekane@nekane.com',
+        email: 'test@test.com',
       });
       const newAccount = queryAccount[0];
-      const newHash = await verifyPassword('nekaneSweet', newAccount.salt);
-      expect(newAccount.hash).not.toBe('nekaneSweet');
+      const newHash = await verifyPassword('test', newAccount.salt);
+      expect(newAccount.hash).not.toBe('test');
       expect(newAccount.hash).toBe(newHash);
       done();
     });
