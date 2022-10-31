@@ -21,6 +21,7 @@
     "no-console": "error",
     "max-len": ["error", { "code": 150 }],
     "prettier/prettier": "error",
+    "import/no-mutable-exports": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true, "optionalDependencies": false, "peerDependencies": false }]
   },
   "settings": {
