@@ -12,7 +12,7 @@ export const pathToTreeFile = (_path: string, pathRoot: string = ''): ITreeFile 
   const directoryPath: string = path.join(__dirname, `${pathRoot}${_path}`);
   const dir: string[] = fs.readdirSync(directoryPath).filter((e) => !/\.map$/.exec(e));
 
-  const files: string[] = dir.filter((file) => file.includes('.'));
+  const files: string[] = dir.filter((file) => file.includes('.') && !file.includes('.gitkeep'));
   const folders: string[] = dir.filter((folder) => !folder.includes('.'));
 
   const foldersObject: ITreeFile[] = folders.map((e) => pathToTreeFile(e, `${pathRoot}${_path}/`));
